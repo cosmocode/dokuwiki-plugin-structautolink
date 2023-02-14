@@ -1,0 +1,7 @@
+base   autolink5
+author Andreas Gohr
+email  gohr@cosmocode.de
+date   2023-02-14
+name   autolink5 plugin
+desc   Automatically link to pages in a namespace
+url    https://www.dokuwiki.org/plugin:autolink5
