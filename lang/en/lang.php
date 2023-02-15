@@ -1,6 +1,6 @@
 <?php
 /**
- * English language file for autolink5 plugin
+ * English language file for structautolink plugin
  *
  * @author Andreas Gohr <gohr@cosmocode.de>
  */

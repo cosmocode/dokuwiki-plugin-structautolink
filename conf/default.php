@@ -1,6 +1,6 @@
 <?php
 /**
- * Default settings for the autolink5 plugin
+ * Default settings for the structautolink plugin
  *
  * @author Andreas Gohr <gohr@cosmocode.de>
  */

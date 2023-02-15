@@ -1,12 +1,12 @@
-autolink5 plugin for DokuWiki
+structautolink plugin for DokuWiki
 
-Automatically link to pages in a namespace
+Automatic page linking based on struct data
 
 All documentation for this plugin can be found at
-https://www.dokuwiki.org/plugin:autolink5
+https://www.dokuwiki.org/plugin:structautolink
 
 If you install this plugin manually, make sure it is installed in
-lib/plugins/autolink5/ - if the folder is called different it
+lib/plugins/structautolink/ - if the folder is called different it
 will not work!
 
 Please refer to http://www.dokuwiki.org/extensions for additional info

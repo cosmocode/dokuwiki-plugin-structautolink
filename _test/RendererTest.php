@@ -1,20 +1,20 @@
 <?php
 
-namespace dokuwiki\plugin\autolink5\test;
+namespace dokuwiki\plugin\structautolink\test;
 
 use DokuWikiTest;
 
 /**
- * FIXME tests for the autolink5 plugin
+ * FIXME tests for the structautolink plugin
  *
- * @group plugin_autolink5
+ * @group plugin_structautolink
  * @group plugins
  */
 class RendererTest extends DokuWikiTest
 {
     public function testFindMatchingTokens()
     {
-        $R = new \renderer_plugin_autolink5();
+        $R = new \renderer_plugin_structautolink();
         $R->setGlossary([
             'ml' => ['ML', 'Maschinelles Lernen', 'Machine Learning'],
             'ki' => ['KI', 'Künstliche Intelligenz', 'AI', 'Artificial Intelligence'],
@@ -50,7 +50,7 @@ class RendererTest extends DokuWikiTest
 
     public function testCdata()
     {
-        $R = new \renderer_plugin_autolink5();
+        $R = new \renderer_plugin_structautolink();
         $R->setGlossary([
             'ml' => ['ML', 'Maschinelles Lernen', 'Machine Learning'],
             'ki' => ['KI', 'Künstliche Intelligenz', 'AI', 'Artificial Intelligence'],

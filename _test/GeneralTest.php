@@ -1,13 +1,13 @@
 <?php
 
-namespace dokuwiki\plugin\autolink5\test;
+namespace dokuwiki\plugin\structautolink\test;
 
 use DokuWikiTest;
 
 /**
- * General tests for the autolink5 plugin
+ * General tests for the structautolink plugin
  *
- * @group plugin_autolink5
+ * @group plugin_structautolink
  * @group plugins
  */
 class GeneralTest extends DokuWikiTest
@@ -31,7 +31,7 @@ class GeneralTest extends DokuWikiTest
         $this->assertArrayHasKey('desc', $info);
         $this->assertArrayHasKey('url', $info);
 
-        $this->assertEquals('autolink5', $info['base']);
+        $this->assertEquals('structautolink', $info['base']);
         $this->assertRegExp('/^https?:\/\//', $info['url']);
         $this->assertTrue(mail_isvalid($info['email']));
         $this->assertRegExp('/^\d\d\d\d-\d\d-\d\d$/', $info['date']);
@@ -61,7 +61,7 @@ class GeneralTest extends DokuWikiTest
         $this->assertEquals(
             gettype($conf),
             gettype($meta),
-            'Both ' . DOKU_PLUGIN . 'autolink5/conf/default.php and ' . DOKU_PLUGIN . 'autolink5/conf/metadata.php have to exist and contain the same keys.'
+            'Both ' . DOKU_PLUGIN . 'structautolink/conf/default.php and ' . DOKU_PLUGIN . 'structautolink/conf/metadata.php have to exist and contain the same keys.'
         );
 
         if ($conf !== null && $meta !== null) {
@@ -69,7 +69,7 @@ class GeneralTest extends DokuWikiTest
                 $this->assertArrayHasKey(
                     $key,
                     $meta,
-                    'Key $meta[\'' . $key . '\'] missing in ' . DOKU_PLUGIN . 'autolink5/conf/metadata.php'
+                    'Key $meta[\'' . $key . '\'] missing in ' . DOKU_PLUGIN . 'structautolink/conf/metadata.php'
                 );
             }
 
@@ -77,7 +77,7 @@ class GeneralTest extends DokuWikiTest
                 $this->assertArrayHasKey(
                     $key,
                     $conf,
-                    'Key $conf[\'' . $key . '\'] missing in ' . DOKU_PLUGIN . 'autolink5/conf/default.php'
+                    'Key $conf[\'' . $key . '\'] missing in ' . DOKU_PLUGIN . 'structautolink/conf/default.php'
                 );
             }
         }

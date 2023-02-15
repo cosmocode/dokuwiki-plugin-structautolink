@@ -1,7 +1,7 @@
-base   autolink5
+base   structautolink
 author Andreas Gohr
 email  gohr@cosmocode.de
-date   2023-02-14
-name   autolink5 plugin
-desc   Automatically link to pages in a namespace
-url    https://www.dokuwiki.org/plugin:autolink5
+date   2023-02-15
+name   structautolink plugin
+desc   Automatic page linking based on struct data
+url    https://www.dokuwiki.org/plugin:structautolink

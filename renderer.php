@@ -5,12 +5,12 @@ use dokuwiki\plugin\struct\meta\SearchConfig;
 use dokuwiki\plugin\struct\meta\StructException;
 
 /**
- * DokuWiki Plugin autolink5 (Renderer Component)
+ * DokuWiki Plugin structautolink (Renderer Component)
  *
  * @license GPL 2 http://www.gnu.org/licenses/gpl-2.0.html
  * @author  Andreas Gohr <gohr@cosmocode.de>
  */
-class renderer_plugin_autolink5 extends Doku_Renderer_xhtml
+class renderer_plugin_structautolink extends Doku_Renderer_xhtml
 {
     /** @var array[] The glossary terms per page */
     protected $glossary = [];
