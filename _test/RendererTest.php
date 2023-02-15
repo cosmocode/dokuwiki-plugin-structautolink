@@ -66,7 +66,13 @@ class RendererTest extends DokuWikiTest
         $this->assertStringStartsWith('Was wir über <a href', $result);
         $this->assertStringEndsWith('dl ist egal.', $result);
 
-        $pq = (new \DOMWrap\Document())->html($result);
+        if(class_exists('DOMWrap\Document')) {
+            $pq = (new \DOMWrap\Document())->html($result);
+        } else {
+            // deprecated
+            $pq = \phpQuery::newDocumentHTML($result);
+        }
+
         $this->assertEquals(2, $pq->find('a')->count());
         $this->assertEquals('Künstliche Intelligenz', $pq->find('a')->eq(0)->text());
         $this->assertEquals('Machine Learning', $pq->find('a')->eq(1)->text());
