@@ -6,7 +6,7 @@
  */
 
 
-$meta['match'] = array('string');
 $meta['schema'] = array('string');
 $meta['field']  = array('string');
+$meta['match'] = array('string');
 

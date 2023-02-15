@@ -42,6 +42,14 @@ class renderer_plugin_autolink5 extends Doku_Renderer_xhtml
     /** @inheritDoc */
     public function cdata($text)
     {
+        global $ID;
+
+        // only auto-link if wanted
+        if ($this->getConf('match') && !preg_match('/' . $this->getConf('match') . '/i', ":$ID")) {
+            parent::cdata($text);
+            return;
+        }
+
         $tokens = $this->findMatchingTokens($text);
         if (!$tokens) {
             parent::cdata($text);
@@ -143,7 +151,7 @@ class renderer_plugin_autolink5 extends Doku_Renderer_xhtml
 
         $tokens = [];
         foreach (array_keys($this->glossary) as $num => $id) {
-            if(!$this->glossary[$id]) continue; // this page has been linked before
+            if (!$this->glossary[$id]) continue; // this page has been linked before
 
             foreach ($matches["p$num"] as $match) {
                 if ($match[0] === '') continue;
