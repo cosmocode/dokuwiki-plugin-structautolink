@@ -120,9 +120,7 @@ class renderer_plugin_autolink5 extends Doku_Renderer_xhtml
         $patterns = [];
         $num = 0; // term number
         foreach ($this->glossary as $terms) {
-            // FIXME sort terms by length
             $terms = array_map('preg_quote_cb', $terms);
-
             $patterns[] = '(?P<p' . ($num++) . '>' . join('|', $terms) . ')';
         }
 
@@ -145,6 +143,8 @@ class renderer_plugin_autolink5 extends Doku_Renderer_xhtml
 
         $tokens = [];
         foreach (array_keys($this->glossary) as $num => $id) {
+            if(!$this->glossary[$id]) continue; // this page has been linked before
+
             foreach ($matches["p$num"] as $match) {
                 if ($match[0] === '') continue;
                 $tokens[] = [
@@ -153,7 +153,8 @@ class renderer_plugin_autolink5 extends Doku_Renderer_xhtml
                     'pos' => $match[1],
                     'len' => strlen($match[0]),
                 ];
-                break;
+                $this->glossary[$id] = false; // don't link this page again
+                break; // don't link any other term of this page
             }
         }
 

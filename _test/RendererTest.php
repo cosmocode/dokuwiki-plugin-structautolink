@@ -58,7 +58,9 @@ class RendererTest extends DokuWikiTest
             'nlp' => ['NLP', 'Natural Language Processing'],
         ]);
 
-        $R->cdata('Was wir über Künstliche Intelligenz wissen, kann uns nur Machine Learning beantworten. dl ist egal.');
+        $R->cdata('Was wir über Künstliche Intelligenz wissen, kann uns nur Machine Learning beantworten.');
+        $R->cdata('Künstliche Intelligenz ist KI'); // should not be linked again
+        $R->cdata('dl ist egal.'); // lowercase != uppercase
         $result = $R->doc;
 
         $this->assertStringStartsWith('Was wir über <a href', $result);
