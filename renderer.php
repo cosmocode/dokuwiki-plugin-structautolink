@@ -143,6 +143,8 @@ class renderer_plugin_structautolink extends Doku_Renderer_xhtml
      */
     public function findMatchingTokens($text)
     {
+        global $ID;
+
         if (!$this->regex) return false;
 
         if (!preg_match_all($this->regex, $text, $matches, PREG_OFFSET_CAPTURE)) {
@@ -152,6 +154,7 @@ class renderer_plugin_structautolink extends Doku_Renderer_xhtml
         $tokens = [];
         foreach (array_keys($this->glossary) as $num => $id) {
             if (!$this->glossary[$id]) continue; // this page has been linked before
+            if ($id === $ID) continue; // don't link to the current page
 
             foreach ($matches["p$num"] as $match) {
                 if ($match[0] === '') continue;
