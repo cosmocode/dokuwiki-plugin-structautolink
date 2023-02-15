@@ -1,5 +1,7 @@
 <?php
 
+use dokuwiki\plugin\struct\meta\SearchConfig;
+
 /**
  * DokuWiki Plugin autolink5 (Renderer Component)
  *
@@ -9,72 +11,31 @@
 class renderer_plugin_autolink5 extends Doku_Renderer_xhtml
 {
     /** @var array[] The glossary terms per page */
-    protected $glossary = [
-        'ml' => ['ML', 'Maschinelles Lernen', 'Machine Learning'],
-        'ki' => ['KI', 'Künstliche Intelligenz', 'AI', 'Artificial Intelligence'],
-        'dl' => ['DL', 'Deep Learning'],
-        'nlp' => ['NLP', 'Natural Language Processing'],
-    ];
-
-    /** @var array The same as $glossary but with a named regex pattern as value */
-    protected $patterns = [];
+    protected $glossary = [];
 
     /** @var string The compound regex to match all terms */
     protected $regex;
 
-    /**
-     * Constructor
-     *
-     * initializes the regex to match terms
-     */
-    public function __construct()
-    {
-
-        foreach ($this->glossary as $id => $terms) {
-            // FIXME sort terms by length
-            $terms = array_map('preg_quote_cb', $terms);
-
-            $this->patterns[$id] = '(?P<' . $id . '>' . join('|', $terms) . ')';
-        }
-
-        $this->regex = '/\b(?:' . implode('|', array_values($this->patterns)) . ')\b/';
-    }
+    // region renderer methods
 
     /**
-     * Find all matching glossary tokens in the given text
+     * Make this renderer available as alternative default renderer
      *
-     * @param string $text
-     * @return array|false Either an array of tokens or false if no matches were found
+     * @param string $format
+     * @return bool
      */
-    public function findMatchingTokens($text)
+    public function canRender($format)
     {
-        if (!preg_match_all($this->regex, $text, $matches, PREG_OFFSET_CAPTURE)) {
-            return false;
-        }
-
-        $tokens = [];
-        foreach (array_keys($this->glossary) as $id) {
-            if (!isset($matches[$id])) continue;
-            foreach ($matches[$id] as $match) {
-                if ($match[0] === '') continue;
-                $tokens[] = [
-                    'id' => $id,
-                    'term' => $match[0],
-                    'pos' => $match[1],
-                    'len' => strlen($match[0]),
-                ];
-                break;
-            }
-        }
-
-        // sort by position
-        usort($tokens, function ($a, $b) {
-            return $a['pos'] - $b['pos'];
-        });
-
-        return $tokens;
+        if ($format == 'xhtml') return true;
+        return false;
     }
 
+    /** @inheritdoc */
+    public function document_start()
+    {
+        parent::document_start();
+        $this->setGlossary($this->loadGlossary());
+    }
 
     /** @inheritDoc */
     public function cdata($text)
@@ -98,6 +59,100 @@ class renderer_plugin_autolink5 extends Doku_Renderer_xhtml
         }
 
     }
+
+    // region logic methods
+
+    /**
+     * Load the defined glossary terms from struct
+     *
+     * @return array[] [pageid => [terms, ...], ...]
+     */
+    public function loadGlossary()
+    {
+        $search = new SearchConfig([
+            'schemas' => [[$this->getConf('schema'), 'glossary']],
+            'cols' => ['%pageid%', $this->getConf('field')],
+        ]);
+        $data = $search->execute();
+
+        $glossary = [];
+        foreach ($data as $row) {
+            $glossary[$row[0]->getValue()] = $row[1]->getValue();
+        }
+
+        return $glossary;
+    }
+
+    /**
+     * Set the given glossary and rebuild the regex
+     *
+     * @param array[] $glossary [pageid => [terms, ...], ...]
+     */
+    public function setGlossary($glossary)
+    {
+        $this->glossary = $glossary;
+        $this->buildPatterns();
+    }
+
+
+    /**
+     * initializes the regex to match terms
+     */
+    public function buildPatterns()
+    {
+        if(!$this->glossary) {
+            $this->regex = null;
+            return;
+        }
+
+        $patterns = [];
+        $num = 0; // term number
+        foreach ($this->glossary as $terms) {
+            // FIXME sort terms by length
+            $terms = array_map('preg_quote_cb', $terms);
+
+            $patterns[] = '(?P<p' . ($num++) . '>' . join('|', $terms) . ')';
+        }
+
+        $this->regex = '/\b(?:' . implode('|', $patterns) . ')\b/';
+    }
+
+    /**
+     * Find all matching glossary tokens in the given text
+     *
+     * @param string $text
+     * @return array|false Either an array of tokens or false if no matches were found
+     */
+    public function findMatchingTokens($text)
+    {
+        if(!$this->regex) return false;
+
+        if (!preg_match_all($this->regex, $text, $matches, PREG_OFFSET_CAPTURE)) {
+            return false;
+        }
+
+        $tokens = [];
+        foreach (array_keys($this->glossary) as $num => $id) {
+            foreach ($matches["p$num"] as $match) {
+                if ($match[0] === '') continue;
+                $tokens[] = [
+                    'id' => $id,
+                    'term' => $match[0],
+                    'pos' => $match[1],
+                    'len' => strlen($match[0]),
+                ];
+                break;
+            }
+        }
+
+        // sort by position
+        usort($tokens, function ($a, $b) {
+            return $a['pos'] - $b['pos'];
+        });
+
+        return $tokens;
+    }
+
 
 
 }

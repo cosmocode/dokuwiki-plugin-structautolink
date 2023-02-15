@@ -15,6 +15,12 @@ class RendererTest extends DokuWikiTest
     public function testFindMatchingTokens()
     {
         $R = new \renderer_plugin_autolink5();
+        $R->setGlossary([
+            'ml' => ['ML', 'Maschinelles Lernen', 'Machine Learning'],
+            'ki' => ['KI', 'Künstliche Intelligenz', 'AI', 'Artificial Intelligence'],
+            'dl' => ['DL', 'Deep Learning'],
+            'nlp' => ['NLP', 'Natural Language Processing'],
+        ]);
 
         $text = 'Was wir über Künstliche Intelligenz wissen, kann uns nur Machine Learning beantworten. dl ist egal.';
         $result = $R->findMatchingTokens($text);
@@ -45,6 +51,12 @@ class RendererTest extends DokuWikiTest
     public function testCdata()
     {
         $R = new \renderer_plugin_autolink5();
+        $R->setGlossary([
+            'ml' => ['ML', 'Maschinelles Lernen', 'Machine Learning'],
+            'ki' => ['KI', 'Künstliche Intelligenz', 'AI', 'Artificial Intelligence'],
+            'dl' => ['DL', 'Deep Learning'],
+            'nlp' => ['NLP', 'Natural Language Processing'],
+        ]);
 
         $R->cdata('Was wir über Künstliche Intelligenz wissen, kann uns nur Machine Learning beantworten. dl ist egal.');
         $result = $R->doc;
