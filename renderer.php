@@ -1,6 +1,8 @@
 <?php
 
+use dokuwiki\ErrorHandler;
 use dokuwiki\plugin\struct\meta\SearchConfig;
+use dokuwiki\plugin\struct\meta\StructException;
 
 /**
  * DokuWiki Plugin autolink5 (Renderer Component)
@@ -60,6 +62,7 @@ class renderer_plugin_autolink5 extends Doku_Renderer_xhtml
 
     }
 
+    // endregion
     // region logic methods
 
     /**
@@ -69,11 +72,20 @@ class renderer_plugin_autolink5 extends Doku_Renderer_xhtml
      */
     public function loadGlossary()
     {
-        $search = new SearchConfig([
-            'schemas' => [[$this->getConf('schema'), 'glossary']],
-            'cols' => ['%pageid%', $this->getConf('field')],
-        ]);
-        $data = $search->execute();
+        $schema = $this->getConf('schema');
+        $field = $this->getConf('field');
+        if (!$schema || !$field) return [];
+
+        try {
+            $search = new SearchConfig([
+                'schemas' => [[$schema, 'glossary']],
+                'cols' => ['%pageid%', $field],
+            ]);
+            $data = $search->execute();
+        } catch (StructException $e) {
+            ErrorHandler::logException($e);
+            return [];
+        }
 
         $glossary = [];
         foreach ($data as $row) {
@@ -100,7 +112,7 @@ class renderer_plugin_autolink5 extends Doku_Renderer_xhtml
      */
     public function buildPatterns()
     {
-        if(!$this->glossary) {
+        if (!$this->glossary) {
             $this->regex = null;
             return;
         }
@@ -125,7 +137,7 @@ class renderer_plugin_autolink5 extends Doku_Renderer_xhtml
      */
     public function findMatchingTokens($text)
     {
-        if(!$this->regex) return false;
+        if (!$this->regex) return false;
 
         if (!preg_match_all($this->regex, $text, $matches, PREG_OFFSET_CAPTURE)) {
             return false;
@@ -152,7 +164,6 @@ class renderer_plugin_autolink5 extends Doku_Renderer_xhtml
 
         return $tokens;
     }
-
 
 
 }
